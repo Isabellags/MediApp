@@ -11,31 +11,34 @@
     <div id="profesionales_excelencia" class="row">
       <div class="cont-profesionales col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <h3>Equipo Directivo</h3>
-        <div class="cont-listado row">
 
+
+        <div class="cont-listado row">
+          {% for p in mis_profesionales %}
           <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <div class="prof int">
               <figure>
-                <a href="#">
+                <a href="#">          
+                  {% if p.foto %}
                   <img width="270" height="350"
-                    src="{% static './imagenes/doctor1.jpg' %}"
-                    class="img-responsive wp-post-image" alt="" decoding="async" loading="lazy"> </a>
-                <h4 class="nombre white">Dr. Sergio Fernandez</h4>
-
+                    src="{{p.foto.url}}"
+                    class="img-responsive wp-post-image" alt="" decoding="async" loading="lazy">       
+                  {% else %}
+                  <img width="270" height="350"
+                  src=""
+                  class="img-responsive wp-post-image" alt="" decoding="async" loading="lazy">
+                  {% endif %}
+                  </a>
+                <h4 class="nombre white">{{p.nombre}} {{p.apellido}}</h4>
                 <span class="cargo" style="display: none;">Director Odontológico</span>
-
               </figure>
               <div class="details">
-                <p class="extracto">Director Odontológico. Cirujano Dentista</p>
+                <p class="extracto">{{p.cargo}}</p>
                 <p class="rrss"></p>
               </div>
-
             </div>
           </div>
-
-
-
-
+          {% endfor %}
       </div>
     </div>
   </div>

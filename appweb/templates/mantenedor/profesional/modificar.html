@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block contenido %}
+
+{% load crispy_forms_tags %}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h2 class="mt-4">Modificar profesional</h2>
+    </div>
+   
+
+    <h1 style="color:red"> {{mensaje}} </h1>
+    <form id="formProf" method="POST" action="" enctype="multipart/form-data" >
+      {% csrf_token %}
+
+      {{ form | crispy }}  
+
+      <button type="submit" class="btn btn-primary">Modificar</button>
+      <button type="reset" class="btn btn-danger">Reset</button>
+    
+    </form>
+  </div>
+
+
+  {% endblock %}
