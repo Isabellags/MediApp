@@ -3,6 +3,15 @@ from .models import Profesional
 from .forms import ContactoForm, ProfesionalForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login
+from .models import FormularioContacto
+from .forms import ContactoForm
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from .forms import ContactoForm
+
+
+
+
 
 # Create your views here.
 def home(request):
@@ -70,16 +79,26 @@ def agregar_profesional(request):
     return render(request, "mantenedor/profesional/agregar.html", data)
 
 
+#def listar_profesional(request):
+
+   # mis_profesionales = Profesional.objects.all()
+
+   # data = {
+       # "profesionales" : mis_profesionales
+   # }#
+
+
+   # return render(request, "mantenedor/profesional/listar.html", data)
+
+
 def listar_profesional(request):
-
     mis_profesionales = Profesional.objects.all()
-
-    data = {
-        "profesionales" : mis_profesionales
+    total_profesionales = mis_profesionales.count()
+    context = {
+        'mis_profesionales': mis_profesionales,
+        'total_profesionales': total_profesionales,
     }
-
-
-    return render(request, "mantenedor/profesional/listar.html", data)
+    return render(request, 'profesionales.html', context)   
 
 
 def modificar_profesional(request, rut):
@@ -160,3 +179,80 @@ def registro_profesional(request):
 
         
     return render(request, "registration/registro.html", data)
+
+
+#LO NUEVO
+
+
+
+@login_required
+def formulario_contacto(request):
+    cantidad_formularios = FormularioContacto.objects.filter(usuario=request.user).count()
+    mensaje = f"Has enviado {cantidad_formularios} formularios."
+    
+    if request.method == "POST":
+        form = ContactoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Guardar el envío del formulario en FormularioContacto
+            FormularioContacto.objects.create(usuario=request.user)
+            # Actualizar el conteo después del envío
+            cantidad_formularios += 1
+            mensaje = f"Has enviado {cantidad_formularios} formularios."
+            # Redirigir para evitar el reenvío del formulario
+            return redirect('formulario_contacto')  
+
+    else:
+        form = ContactoForm()
+        
+    return render(request, 'contacto.html', {'mensaje': mensaje, 'miForm': form})
+
+
+
+def cerrar_sesion(request):
+    if request.method == 'POST':
+        # Lógica de cierre de sesión aquí
+        return render(request, 'registration/logged_out.html')
+    else:
+        # Si se accede con GET, simplemente renderiza la plantilla de cierre de sesión
+        return render(request, 'registration/logged_out.html')
+    
+
+
+
+
+    
+
+def contact_view(request):
+    # Inicializar el contador si no existe en la sesión
+    if 'form_count' not in request.session:
+        request.session['form_count'] = 0
+
+    if request.method == "POST":
+        form = ContactoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Incrementar el contador de sesión
+            request.session['form_count'] += 1
+            request.session.modified = True
+            
+            # Incrementar el contador en la base de datos para el usuario autenticado
+            if request.user.is_authenticated:
+                FormularioContacto.objects.create(usuario=request.user)
+            
+            return redirect('contact_view')  # Redirigir para evitar reenvíos del formulario
+    else:
+        form = ContactoForm()
+
+    form_count = request.session.get('form_count', 0)
+    if request.user.is_authenticated:
+        user_form_count = FormularioContacto.objects.filter(usuario=request.user).count()
+    else:
+        user_form_count = 0
+
+    return render(request, 'contacto.html', {
+        'miForm': form,
+        'form_count': form_count,
+        'user_form_count': user_form_count,
+        'mensaje': ''  # Puedes incluir cualquier mensaje que desees mostrar
+    })

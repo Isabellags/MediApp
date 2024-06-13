@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Cargo(models.Model):
@@ -35,3 +36,17 @@ class Contacto(models.Model):
 
     def __str__(self):
         return self.nombre + " "+self.email
+    
+# models.py
+
+
+class FormularioContacto(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+    # Otros campos del formulario si es necesario
+
+
+
+
+
+
