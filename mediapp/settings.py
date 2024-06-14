@@ -28,7 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 LOGIN_REDIRECT_URL = '/login_usuario'
-LOGOUT_REDIRECT_URL = '/home'
+LOGOUT_REDIRECT_URL = '/cerrar-sesion'
 
 # Application definition
 
@@ -56,6 +56,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Configuración de la sesión
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Usar la base de datos para almacenar sesiones
+SESSION_COOKIE_NAME = 'sessionid' 
 
 ROOT_URLCONF = 'mediapp.urls'
 
