@@ -12,5 +12,6 @@ urlpatterns = [
     path('eliminar_profesional/<rut>/', eliminar_profesional, name="eliminar_profesional"),
     path('login_usuario/', login_usuario, name='login_usuario'),
     path('registro_profesional/', registro_profesional, name="reg_prof"),
+    path('descargar-excel-profesionales-por-fecha/', descargar_excel_profesionales_por_fecha, name='descargar_excel_profesionales_por_fecha'),
 
 ]
